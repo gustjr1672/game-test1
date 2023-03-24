@@ -18,13 +18,13 @@ let floorImg = new Image();
 floorImg.src = "./img/floor.JPG";
 
 let backImg = new Image();
-backImg.src = "/img/backImg.JPG";
+backImg.src = "./img/backImg.JPG";
 
 let backIm = new Image();
-backIm.src = "/img/backImg.JPG";
+backIm.src = "./img/backImg.JPG";
 
 let victoryImg = new Image();
-victoryImg.src = "/img/victory.jpg";
+victoryImg.src = "./img/victory.png";
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -79,10 +79,10 @@ class Player {
 class Victory {
   constructor() {
     this.position = {
-      x: canvas.width * 0.2 - 800,
+      x: canvas.width * 0.2,
       y: canvas.height * 0.2,
     };
-    this.width = canvas.width * 0.2;
+    this.width = canvas.width * 0.6;
     this.height = canvas.height * 0.6;
   }
   draw() {
