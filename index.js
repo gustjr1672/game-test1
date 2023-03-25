@@ -9,7 +9,7 @@ let platformImg = new Image();
 platformImg.src = "./img/platform.JPG";
 
 let rabbitImg = new Image();
-rabbitImg.src = "./img/토끼.JPG";
+rabbitImg.src = "./img/peanut1.png";
 
 let doorImg = new Image();
 doorImg.src = "./img/문.JPG";
@@ -41,8 +41,8 @@ class Player {
       x: 0,
       y: 1,
     };
-    this.width = 40;
-    this.height = 40;
+    this.width = 120;
+    this.height = 120;
   }
 
   draw() {
@@ -64,8 +64,8 @@ class Player {
     this.position.y += this.velocity.y;
 
     if (
-      this.position.y + this.velocity.y + this.height <=
-      canvas.height - 150
+      this.position.y + this.velocity.y + this.height <= canvas.height - 150 ||
+      player.position.y == platforms[2].position.x - player.width
     ) {
       //캐릭터랑 바닥위치 조정
       this.velocity.y += gravity;
@@ -75,11 +75,22 @@ class Player {
     }
   }
 }
-
+var isOnplatform = function (player, platform) {
+  if (
+    player.position.y + player.height <= platform.position.y &&
+    player.position.y + player.height + player.velocity.y >=
+      platform.position.y &&
+    player.position.x + player.width >= platform.position.x &&
+    player.position.x <= platform.position.x + platform.width
+  ) {
+    return true;
+  }
+  return false;
+};
 class Victory {
   constructor() {
     this.position = {
-      x: canvas.width * 0.2,
+      x: canvas.width * 0.2 - 800,
       y: canvas.height * 0.2,
     };
     this.width = canvas.width * 0.6;
@@ -122,11 +133,11 @@ class Platform {
 class Door {
   constructor() {
     this.position = {
-      x: 1600,
-      y: 400 - 220,
+      x: 1500,
+      y: 400 - 270,
     };
-    this.width = 100;
-    this.height = 220;
+    this.width = 200;
+    this.height = 270;
   }
 
   draw() {
@@ -212,11 +223,17 @@ function animate() {
     if (platforms[1].position.x == platformLeftBoundary) xdirec = false;
   }
   if (ydirec == false) {
-    platforms[2].position.y += 2;
+    if (isOnplatform(player, platforms[2])) {
+      player.position.y += 2;
+      platforms[2].position.y += 2;
+    } else platforms[2].position.y += 2;
     if (platforms[2].position.y == 500) ydirec = true;
   }
   if (ydirec == true) {
-    platforms[2].position.y -= 2;
+    if (isOnplatform(player, platforms[2])) {
+      player.position.y -= 2;
+      platforms[2].position.y -= 2;
+    } else platforms[2].position.y -= 2;
     if (platforms[2].position.y == 100) ydirec = false;
   }
 
@@ -254,8 +271,42 @@ function animate() {
       player.position.x <= platform.position.x + platform.width
     ) {
       player.velocity.y = 0;
+    } else if (
+      player.position.y + player.height <= platforms[1].position.y &&
+      player.position.y + player.height + player.velocity.y >=
+        platforms[1].position.y &&
+      player.position.x + player.width >= platforms[1].position.x &&
+      player.position.x <= platforms[1].position.x + platforms[1].width
+    ) {
+      if (xdirec == false) {
+        player.position.x += 6;
+        if (platforms[1].position.x == platformLeftBoundary + 300)
+          xdirec = true;
+      }
+      if (xdirec == true) {
+        player.position.x -= 6;
+        if (platforms[1].position.x == platformLeftBoundary) xdirec = false;
+      }
+      player.velocity.y = 0;
     }
+    // else if (
+    //   player.position.y + player.height <= platforms[2].position.y &&
+    //   player.position.y + player.height + player.velocity.y >=
+    //     platforms[2].position.y &&
+    //   player.position.x + player.width >= platforms[2].position.x &&
+    //   player.position.x <= platforms[2].position.x + platforms[2].width
+    // ) {
+    //   if (ydirec == false) {
+    //     player.velocity.y = 0;
+    //     player.position.y += 2;
+    //   }
+    //   if (ydirec == true) {
+    //     player.velocity.y = 0;
+    //     player.position.y -= 2;
+    //   }
+    // }
   });
+
   //platform 바닥 못 넘기
   platforms.forEach((platform) => {
     if (
@@ -265,7 +316,7 @@ function animate() {
       player.position.x <= platform.position.x + platform.width
     ) {
       player.position.y = platform.position.y + platform.height;
-      player.velocity.y = 2;
+      player.velocity.y = 4;
     }
   });
 
@@ -276,6 +327,7 @@ function animate() {
     door.position.y + door.height >= player.position.y + player.height
   ) {
     done = true;
+    player.velocity.x = 0;
     if (victory.position.x < canvas.width * 0.2) {
       victory.position.x += 100;
       victory.draw();
@@ -285,7 +337,7 @@ function animate() {
 
 const player = new Player();
 const platforms = [
-  new Platform({ x: 200, y: 300 }),
+  new Platform({ x: 250, y: 300 }),
   new Platform({ x: 300, y: 700 }),
   new Platform({ x: 800, y: 200 }),
   new Platform({ x: 1300, y: 400 }),
