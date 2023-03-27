@@ -4,34 +4,32 @@
 const canvas = document.querySelector("canvas");
 
 const c = canvas.getContext("2d");
-
 const clear = document.getElementById("clear");
 
 let platformImg = new Image();
-platformImg.src = "./img/platform.JPG";
+platformImg.src = "./img/통나무1.png";
 
 let rabbitImg = new Image();
 rabbitImg.src = "./img/peanut1.png";
 
 let doorImg = new Image();
-doorImg.src = "./img/문.JPG";
+doorImg.src = "./img/door.png";
 
 let floorImg = new Image();
-floorImg.src = "./img/floor.JPG";
+floorImg.src = "./img/444.JPG";
 
 let backImg = new Image();
 backImg.src = "./img/backImg.JPG";
 
 let backIm = new Image();
-backIm.src = "./img/backImg.JPG";
+backIm.src = "./img/41524.jpg";
 
 let victoryImg = new Image();
 victoryImg.src = "./img/victory.png";
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-var gameOver = false;
-
+var done = false;
 const gravity = 1.5;
 // let jumpCount = 0
 class Player {
@@ -93,7 +91,7 @@ var isOnplatform = function (player, platform) {
 class Victory {
   constructor() {
     this.position = {
-      x: canvas.width * 0.2,
+      x: canvas.width * 0.2 - 800,
       y: canvas.height * 0.2,
     };
     this.width = canvas.width * 0.6;
@@ -117,8 +115,8 @@ class Platform {
       y, // y:y
     };
 
-    this.width = 400;
-    this.height = 40;
+    this.width = 300;
+    this.height = 75;
   }
   draw() {
     // c.fillStyle = 'green'
@@ -136,8 +134,8 @@ class Platform {
 class Door {
   constructor() {
     this.position = {
-      x: 1500,
-      y: 400 - 270,
+      x: 1400,
+      y: 400 - 210,
     };
     this.width = 200;
     this.height = 270;
@@ -207,7 +205,7 @@ function animate() {
   requestAnimationFrame(animate);
   c.clearRect(0, 0, canvas.width, canvas.height);
   back.draw();
-  floor.draw();
+  // floor.draw();
   door.draw();
 
   player.update();
@@ -215,9 +213,8 @@ function animate() {
   platforms.forEach((platform) => {
     platform.draw();
   });
-  // console.log(platformLeftBoundary);
-  
-  //좌우로 움직이는 platform
+  console.log(platformLeftBoundary);
+
   if (xdirec == false) {
     platforms[1].position.x += 6;
     if (platforms[1].position.x == platformLeftBoundary + 300) xdirec = true;
@@ -226,18 +223,22 @@ function animate() {
     platforms[1].position.x -= 6;
     if (platforms[1].position.x == platformLeftBoundary) xdirec = false;
   }
-
-  //위아래로 움직이는 platform
   if (ydirec == false) {
-    platforms[2].position.y += 2;
+    if (isOnplatform(player, platforms[2])) {
+      player.position.y += 2;
+      platforms[2].position.y += 2;
+    } else platforms[2].position.y += 2;
     if (platforms[2].position.y == 500) ydirec = true;
   }
   if (ydirec == true) {
-    platforms[2].position.y -= 2;
+    if (isOnplatform(player, platforms[2])) {
+      player.position.y -= 2;
+      platforms[2].position.y -= 2;
+    } else platforms[2].position.y -= 2;
     if (platforms[2].position.y == 100) ydirec = false;
   }
 
-  if (gameOver == false) {
+  if (done == false) {
     if (keys.right.pressed && player.position.x < 400) {
       player.velocity.x = 5;
     } else if (keys.left.pressed && player.position.x > 100) {
@@ -249,7 +250,7 @@ function animate() {
         platforms.forEach((platform) => {
           platform.position.x -= 5;
         });
-        platformLeftBoundary -= 5; //좌우로 움직이는 platform 배경 움직일 때
+        platformLeftBoundary -= 5;
         door.position.x -= 5;
       } else if (keys.left.pressed) {
         platforms.forEach((platform) => {
@@ -261,15 +262,32 @@ function animate() {
     }
   }
 
-
   //platform 위에 올라서기
   platforms.forEach((platform) => {
     if (
-      player.position.y + player.height <= platform.position.y&&
-      player.position.y + player.height + player.velocity.y >= platform.position.y &&
+      player.position.y + player.height <= platform.position.y &&
+      player.position.y + player.height + player.velocity.y >=
+        platform.position.y &&
       player.position.x + player.width >= platform.position.x &&
       player.position.x <= platform.position.x + platform.width
     ) {
+      player.velocity.y = 0;
+    } else if (
+      player.position.y + player.height <= platforms[1].position.y &&
+      player.position.y + player.height + player.velocity.y >=
+        platforms[1].position.y &&
+      player.position.x + player.width >= platforms[1].position.x &&
+      player.position.x <= platforms[1].position.x + platforms[1].width
+    ) {
+      if (xdirec == false) {
+        player.position.x += 6;
+        if (platforms[1].position.x == platformLeftBoundary + 300)
+          xdirec = true;
+      }
+      if (xdirec == true) {
+        player.position.x -= 6;
+        if (platforms[1].position.x == platformLeftBoundary) xdirec = false;
+      }
       player.velocity.y = 0;
     }
     // else if (
@@ -289,6 +307,7 @@ function animate() {
     //   }
     // }
   });
+
   //platform 바닥 못 넘기
   platforms.forEach((platform) => {
     if (
@@ -302,21 +321,20 @@ function animate() {
     }
   });
 
-  //승리조건
   if (
     door.position.x <= player.position.x &&
     door.position.x + door.width >= player.position.x + player.width &&
     door.position.y + door.height / 2 <= player.position.y + player.height &&
     door.position.y + door.height >= player.position.y + player.height
   ) {
-    gameOver = true;
+    done = true;
     clear.style.display = 'block';
-  //   if (victory.position.x < canvas.width * 0.2) {
-  //     victory.position.x += 100;
-  //     victory.draw();
-      
-  //   } 
-  //   else victory.draw();
+    //   if (victory.position.x < canvas.width * 0.2) {
+    //     victory.position.x += 100;
+    //     victory.draw();
+        
+    //   } 
+    //   else victory.draw();
   }
 }
 
@@ -341,18 +359,6 @@ const keys = {
   },
 };
 
-function isOnPlatform(player , platform){
-  if (
-    player.position.y + player.height <= platform.position.y&&
-    player.position.y + player.height + player.velocity.y >= platform.position.y &&
-    player.position.x + player.width >= platform.position.x &&
-    player.position.x <= platform.position.x + platform.width
-  ){
-    return true;
-  }
-  return false;
-} 
-
 animate();
 
 addEventListener("keydown", ({ code }) => {
@@ -364,7 +370,7 @@ addEventListener("keydown", ({ code }) => {
       break;
     case "ArrowUp":
       console.log("up");
-      if (gameOver == false) player.velocity.y -= 20;
+      if (done == false) player.velocity.y -= 20;
       break;
     case "ArrowRight":
       console.log("right");
