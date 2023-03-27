@@ -5,6 +5,8 @@ const canvas = document.querySelector("canvas");
 
 const c = canvas.getContext("2d");
 
+const clear = document.getElementById("clear");
+
 let platformImg = new Image();
 platformImg.src = "./img/platform.JPG";
 
@@ -307,12 +309,14 @@ function animate() {
     door.position.y + door.height / 2 <= player.position.y + player.height &&
     door.position.y + door.height >= player.position.y + player.height
   ) {
-    done = true;
-    if (victory.position.x < canvas.width * 0.2) {
-      victory.position.x += 100;
-      victory.draw();
-    } 
-    else victory.draw();
+    gameOver = true;
+    clear.style.display = 'block';
+  //   if (victory.position.x < canvas.width * 0.2) {
+  //     victory.position.x += 100;
+  //     victory.draw();
+      
+  //   } 
+  //   else victory.draw();
   }
 }
 
