@@ -6,22 +6,22 @@ const canvas = document.querySelector("canvas");
 const c = canvas.getContext("2d");
 
 let platformImg = new Image();
-platformImg.src = "./img/platform.JPG";
+platformImg.src = "./img/통나무1.png";
 
 let rabbitImg = new Image();
 rabbitImg.src = "./img/peanut1.png";
 
 let doorImg = new Image();
-doorImg.src = "./img/문.JPG";
+doorImg.src = "./img/door.png";
 
 let floorImg = new Image();
-floorImg.src = "./img/floor.JPG";
+floorImg.src = "./img/444.JPG";
 
 let backImg = new Image();
 backImg.src = "./img/backImg.JPG";
 
 let backIm = new Image();
-backIm.src = "./img/backImg.JPG";
+backIm.src = "./img/41524.jpg";
 
 let victoryImg = new Image();
 victoryImg.src = "./img/victory.png";
@@ -114,8 +114,8 @@ class Platform {
       y, // y:y
     };
 
-    this.width = 400;
-    this.height = 40;
+    this.width = 300;
+    this.height = 75;
   }
   draw() {
     // c.fillStyle = 'green'
@@ -133,8 +133,8 @@ class Platform {
 class Door {
   constructor() {
     this.position = {
-      x: 1500,
-      y: 400 - 270,
+      x: 1400,
+      y: 400 - 210,
     };
     this.width = 200;
     this.height = 270;
@@ -204,7 +204,7 @@ function animate() {
   requestAnimationFrame(animate);
   c.clearRect(0, 0, canvas.width, canvas.height);
   back.draw();
-  floor.draw();
+  // floor.draw();
   door.draw();
 
   player.update();
