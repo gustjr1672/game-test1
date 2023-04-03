@@ -1,16 +1,29 @@
 // import Platform from './img/platform.JPG'
 
 // console.log(platform)
-const canvas = document.querySelector("canvas");
 
+import {platformImg,rabbitImg} from "./imageload.js";
+
+const canvas = document.getElementById("game-page");
 const c = canvas.getContext("2d");
+
+const canvas1 = document.getElementById("clear-page");
+const c1 = canvas.getContext("2d");
+
+
+
 const clear = document.getElementById("clear");
 
-let platformImg = new Image();
-platformImg.src = "./img/통나무1.png";
 
-let rabbitImg = new Image();
-rabbitImg.src = "./img/peanut1.png";
+// let platformImg = platformImg;
+
+// let platformImg = new Image();
+// platformImg.src = "./img/통나무1.png";
+
+// let rabbitImg = rabbitImg;
+
+// let rabbitImg = new Image();
+// rabbitImg.src = "./img/peanut1.png";
 
 let doorImg = new Image();
 doorImg.src = "./img/door.png";
@@ -29,6 +42,9 @@ victoryImg.src = "./img/victory.png";
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+// canvas1.width = window.innerWidth;
+// canvas1.height = window.innerHeight;
+
 var done = false;
 const gravity = 1.5;
 // let jumpCount = 0
@@ -70,7 +86,8 @@ class Player {
     ) {
       //캐릭터랑 바닥위치 조정
       this.velocity.y += gravity;
-    } else {
+    } 
+    else {
       this.velocity.y = 0;
       // jumpCount =0
     }
@@ -202,9 +219,12 @@ var ydirec = false;
 
 var platformLeftBoundary = 300;
 function animate() {
-  requestAnimationFrame(animate);
-  c.clearRect(0, 0, canvas.width, canvas.height);
-  back.draw();
+  if(done == false){
+    requestAnimationFrame(animate);
+    c.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  // back.draw();
   // floor.draw();
   door.draw();
 
@@ -329,6 +349,9 @@ function animate() {
   ) {
     done = true;
     clear.style.display = 'block';
+    c.fillStyle = "red";
+    c.fillRect(canvas.width/2,canvas.height/2,50,50);
+    
     //   if (victory.position.x < canvas.width * 0.2) {
     //     victory.position.x += 100;
     //     victory.draw();
